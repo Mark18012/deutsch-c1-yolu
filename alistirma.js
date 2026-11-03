@@ -498,3 +498,32 @@ document.addEventListener("click", function (olay) {
 // ===== Başlangıç =====
 
 yanlisAlaniniGuncelle();
+
+
+// ===== Doğrudan bağlantı: alistirma.html?konu=perfekt =====
+
+(function () {
+    const parametreler = new URLSearchParams(location.search);
+    const konu = parametreler.get("konu");
+
+    if (!konu) {
+        return;
+    }
+
+    const ilkSoru = SORULAR.find(function (soru) {
+        return soru.konu === konu;
+    });
+
+    // Konu bulunamazsa normal açılış ekranı kalır
+    if (!ilkSoru) {
+        return;
+    }
+
+    durum.seviye = ilkSoru.seviye;
+    durum.tur = "konu";
+    durum.konu = konu;
+
+    document.getElementById("tur-baslik").textContent = durum.seviye + ": ne çalışmak istersin?";
+    konuListesiniKur();
+    testiBaslat();
+})();
