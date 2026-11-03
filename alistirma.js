@@ -19,6 +19,75 @@ function goster(ekranId) {
     document.querySelectorAll(".ekran").forEach(function (ekran) {
         ekran.hidden = ekran.id !== ekranId;
     });
+
+    if (ekranId === "ekran-seviye") {
+        yanlisAlaniniGuncelle();
+    }
+}
+
+
+// ===== Yanlışlarım: tarayıcı hafızasında saklanır =====
+
+const YANLIS_ANAHTAR = "deutsch-yanlislar";
+
+function yanlislariOku() {
+    try {
+        const metin = localStorage.getItem(YANLIS_ANAHTAR);
+        return metin ? JSON.parse(metin) : [];
+    } catch (hata) {
+        return [];
+    }
+}
+
+function yanlislariYaz(liste) {
+    try {
+        localStorage.setItem(YANLIS_ANAHTAR, JSON.stringify(liste));
+    } catch (hata) {
+        // Tarayıcı kaydı engellediyse site yine çalışır, sadece hatırlamaz.
+    }
+}
+
+// Aynı soruyu tanımak için: soru metni + doğru cevap
+function soruAnahtari(soru) {
+    return soru.soru + " => " + soru.secenekler[soru.dogru];
+}
+
+function yanlisEkle(soru) {
+    const liste = yanlislariOku();
+    const anahtar = soruAnahtari(soru);
+
+    const varMi = liste.some(function (kayitli) {
+        return soruAnahtari(kayitli) === anahtar;
+    });
+
+    if (!varMi) {
+        liste.push(soru);
+        yanlislariYaz(liste);
+    }
+}
+
+function yanlisSil(soru) {
+    const anahtar = soruAnahtari(soru);
+
+    const yeniListe = yanlislariOku().filter(function (kayitli) {
+        return soruAnahtari(kayitli) !== anahtar;
+    });
+
+    yanlislariYaz(yeniListe);
+}
+
+function yanlisAlaniniGuncelle() {
+    const alan = document.getElementById("yanlis-alani");
+    const dugme = document.getElementById("yanlis-butonu");
+
+    if (!alan || !dugme) {
+        return;
+    }
+
+    const sayi = yanlislariOku().length;
+
+    alan.hidden = sayi === 0;
+    dugme.textContent = "🔁 Yanlışlarım (" + sayi + " soru)";
 }
 
 
@@ -59,7 +128,7 @@ function kelimeSorulariUret(seviye, alan) {
     const sorular = [];
 
     secilenler.forEach(function (kelime) {
-        // 1) Anlam sorusu: yanlış şıkları aynı türden (isim/fiil) kelimelerden seç
+        // 1) Anlam sorusu: yanlış şıkları aynı türden (isim/fiil/sıfat) kelimelerden seç
         const ayniTur = KELIMELER.filter(function (k) {
             return k.tur === kelime.tur && k.tr !== kelime.tr;
         });
@@ -184,6 +253,8 @@ function testiBaslat() {
 
     if (durum.tur === "kelime") {
         havuz = kelimeSorulariUret(durum.seviye, durum.alan);
+    } else if (durum.tur === "yanlis") {
+        havuz = yanlislariOku();
     } else {
         havuz = SORULAR.filter(function (soru) {
             return soru.seviye === durum.seviye &&
@@ -192,7 +263,7 @@ function testiBaslat() {
     }
 
     if (havuz.length === 0) {
-        alert("Bu seçim için henüz soru yok.");
+        alert(durum.tur === "yanlis" ? "Yanlış listen boş. Harika!" : "Bu seçim için henüz soru yok.");
         return;
     }
 
@@ -259,9 +330,15 @@ function cevapla(sik, dugme, soru) {
 
     if (sik.dogruMu) {
         durum.puan++;
+
+        // Yanlışlarım testinde doğru bilirsen soru listeden çıkar
+        if (durum.tur === "yanlis") {
+            yanlisSil(soru);
+        }
     } else {
         dugme.classList.add("yanlis");
         durum.yanlislar.push(soru);
+        yanlisEkle(soru);
     }
 
     document.getElementById("test-puan").textContent = "Puan: " + durum.puan;
@@ -270,9 +347,13 @@ function cevapla(sik, dugme, soru) {
     geriBildirim.hidden = false;
     geriBildirim.className = sik.dogruMu ? "dogru-cevap" : "yanlis-cevap";
 
-    const baslangic = sik.dogruMu
-        ? "Doğru! "
-        : "Yanlış. Doğru cevap: " + soru.secenekler[soru.dogru] + ". ";
+    let baslangic;
+
+    if (sik.dogruMu) {
+        baslangic = durum.tur === "yanlis" ? "Doğru, listeden çıkarıldı. " : "Doğru! ";
+    } else {
+        baslangic = "Yanlış. Doğru cevap: " + soru.secenekler[soru.dogru] + ". ";
+    }
 
     geriBildirim.textContent = baslangic + soru.aciklama;
 
@@ -310,6 +391,10 @@ function sonucuGoster() {
         mesaj = "Fena değil. Yanlışlarına bak, konuyu tekrar oku ve yine dene.";
     } else {
         mesaj = "Önce konuyu tekrar oku, sonra yeniden dene. Başlangıçta normal.";
+    }
+
+    if (durum.tur === "yanlis") {
+        mesaj += " Yanlış listende " + yanlislariOku().length + " soru kaldı.";
     }
 
     document.getElementById("sonuc-mesaj").textContent = mesaj;
@@ -383,13 +468,33 @@ document.addEventListener("click", function (olay) {
     } else if (eylem === "konu") {
         durum.konu = deger;
         testiBaslat();
+    } else if (eylem === "yanlislarim") {
+        durum.tur = "yanlis";
+        durum.seviye = "";
+        testiBaslat();
+    } else if (eylem === "yanlis-temizle") {
+        if (confirm("Yanlış listesindeki tüm sorular silinsin mi?")) {
+            yanlislariYaz([]);
+            yanlisAlaniniGuncelle();
+        }
     } else if (eylem === "sonraki") {
         sonrakiSoru();
     } else if (eylem === "tekrar") {
         testiBaslat();
     } else if (eylem === "baska") {
-        goster(durum.tur === "kelime" ? "ekran-alan" : "ekran-konu");
+        if (durum.tur === "kelime") {
+            goster("ekran-alan");
+        } else if (durum.tur === "yanlis") {
+            goster("ekran-seviye");
+        } else {
+            goster("ekran-konu");
+        }
     } else if (eylem === "geri") {
         goster("ekran-" + deger);
     }
 });
+
+
+// ===== Başlangıç =====
+
+yanlisAlaniniGuncelle();

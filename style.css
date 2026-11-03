@@ -560,3 +560,11 @@ button.buton {
 .seviye-C1 {
     background-color: #6b46c1;
 }
+
+/* ===== Yanlışlarım ===== */
+
+.yanlis-alani {
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px solid #e5e1d8;
+}
