@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alıştırma | Deutsch C1 Yolu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Alıştırma</h1>
+        <p>Kendini test et</p>
+        <nav>
+            <a href="index.html">← Ana sayfa</a>
+            <a href="dilbilgisi.html">Dilbilgisi</a>
+            <a href="kelimeler.html">Kelimeler</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <section id="ekran-seviye" class="ekran">
+            <h2>Seviyeni seç</h2>
+            <div class="buton-grup">
+                <button class="buton buton-buyuk" data-eylem="seviye" data-deger="B1">B1</button>
+                <button class="buton buton-buyuk" data-eylem="seviye" data-deger="B2">B2</button>
+                <button class="buton buton-buyuk" data-eylem="seviye" data-deger="C1">C1</button>
+            </div>
+        </section>
+
+        <section id="ekran-tur" class="ekran" hidden>
+            <h2 id="tur-baslik"></h2>
+            <div class="buton-grup">
+                <button class="buton buton-buyuk" data-eylem="tur" data-deger="kelime">Kelime</button>
+                <button class="buton buton-buyuk" data-eylem="tur" data-deger="konu">Dilbilgisi</button>
+            </div>
+            <button class="geri-butonu" data-eylem="geri" data-deger="seviye">← Seviye seçimine dön</button>
+        </section>
+
+        <section id="ekran-alan" class="ekran" hidden>
+            <h2 id="alan-baslik"></h2>
+            <div id="alan-secenekleri"></div>
+            <button class="geri-butonu" data-eylem="geri" data-deger="tur">← Geri</button>
+        </section>
+
+        <section id="ekran-konu" class="ekran" hidden>
+            <h2>Hangi konu?</h2>
+            <div id="konu-secenekleri"></div>
+            <button class="geri-butonu" data-eylem="geri" data-deger="tur">← Geri</button>
+        </section>
+
+        <section id="ekran-test" class="ekran" hidden>
+            <div class="test-ust">
+                <span id="test-ilerleme"></span>
+                <span id="test-puan"></span>
+            </div>
+            <div class="ilerleme-cubugu">
+                <div id="test-cubuk"></div>
+            </div>
+
+            <h2 id="soru-metni"></h2>
+            <div id="secenekler"></div>
+            <div id="geri-bildirim" hidden></div>
+            <button class="buton" id="sonraki" data-eylem="sonraki" hidden>Sonraki →</button>
+        </section>
+
+        <section id="ekran-sonuc" class="ekran" hidden>
+            <h2>Sonuç</h2>
+            <p id="sonuc-puan" class="buyuk-puan"></p>
+            <p id="sonuc-mesaj"></p>
+            <div id="yanlis-listesi"></div>
+            <div class="buton-grup">
+                <button class="buton" data-eylem="tekrar">Tekrar dene</button>
+                <button class="buton" data-eylem="baska">Başka seçim</button>
+                <button class="buton" data-eylem="geri" data-deger="seviye">Başa dön</button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Deutsch C1 Yolu, benim çalışma sitem.</p>
+    </footer>
+
+    <script src="sorular.js"></script>
+    <script src="sorular-b1-parti2.js"></script>
+    <script src="sorular-b1-ek1.js"></script>
+    <script src="sorular-b1-ek2.js"></script>
+    <script src="sorular-b1-ek3.js"></script>
+    <script src="sorular-b2-ek1.js"></script>
+    <script src="sorular-b2-ek2.js"></script>
+    <script src="sorular-b2-ek3.js"></script>
+    <script src="sorular-c1-ek1.js"></script>
+    <script src="sorular-c1-ek2.js"></script>
+    <script src="kelimeler-veri.js"></script>
+    <script src="kelimeler-ek.js"></script>
+    <script src="alistirma.js"></script>
+</body>
+</html>

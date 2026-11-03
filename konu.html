@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelimeler | Deutsch C1 Yolu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1 id="sayfa-baslik">Kelimeler</h1>
+        <p id="sayfa-aciklama"></p>
+        <nav>
+            <a href="kelimeler.html">← Kelimeler</a>
+            <a href="alistirma.html">Alıştırma</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <section>
+            <h2 id="liste-baslik">Kelimeler</h2>
+            <p id="kelime-mesaj" hidden></p>
+
+            <div class="filtre-grup" id="seviye-filtre"></div>
+
+            <input type="search" id="arama" class="arama-kutusu" placeholder="Kelime, anlam ya da cümle ara...">
+
+            <table class="kelime-tablosu" data-kayit="kelimeler">
+                <tr>
+                    <th>Almanca</th>
+                    <th>Türkçe</th>
+                    <th>Örnek cümle</th>
+                    <th>Seviye</th>
+                </tr>
+            </table>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Deutsch C1 Yolu, benim çalışma sitem.</p>
+    </footer>
+
+    <script src="kelimeler-veri.js"></script>
+    <script src="kelimeler-ek.js"></script>
+    <script src="kelime-sayfasi.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
